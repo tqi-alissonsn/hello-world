@@ -1,24 +1,11 @@
-# ...
-# << your config for the build, test1, test2, and deploy jobs >>
-# ...
-
-workflows:
-  version: 2
-  build-test-and-approval-deploy:
-    jobs:
-      - build  # your custom job from your config, that builds your code
-      - test1: # your custom job; runs test suite 1
-          requires: # test1 will not run until the `build` job is completed.
-            - build
-      - test2: # another custom job; runs test suite 2,
-          requires: # test2 is dependent on the success of job `test1`
-            - test1
-      - hold: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
-           - test2
-      # On approval of the `hold` job, any successive job that requires the `hold` job will run.
-      # In this case, a user is manually triggering the deploy job.
-      - deploy:
-          requires:
-            - hold
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout # check out the code in the project directory
+      - run: echo "hello world" # run the `echo` command
