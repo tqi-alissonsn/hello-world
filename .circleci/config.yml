@@ -1,11 +1,15 @@
-version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    # Primary container image where all steps run.
+     - image: buildpack-deps:trusty
+    # Secondary container image on common network.
+     - image: mongo:2.6.8-jessie
+       command: [mongod, --smallfiles]
+
+    working_directory: ~/
+
     steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      # command will execute in trusty container
+      # and can access mongo on localhost
+      - run: sleep 5 && nc -vz localhost 27017
