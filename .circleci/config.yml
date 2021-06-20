@@ -1,6 +1,18 @@
 version: 2.1
 jobs:
-  build:
+  build-hello-world:
+    docker:
+      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout # check out the code in the project directory
+      - run:
+          name: hello world 
+          command: echo "hello world" # run the `echo` command
+
+  build-hello-parameter:
     parameters:
       org_name:
         type: string
@@ -25,10 +37,7 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - build:
-          org_name: my_organization
-          repo_name: project1
-
-      - build:
+      - build-hello-world
+      - build-hello-parameter:
           org_name: my_organization
           repo_name: project2
