@@ -1,6 +1,13 @@
 version: 2.1
 jobs:
   build:
+    parameters:
+      org_name:
+        type: string
+        default: my_org
+      repo_name:
+        type: string
+        default: my_repo
     docker:
       - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
         auth:
@@ -9,3 +16,15 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: echo "hello world" # run the `echo` command
+      - run: echo "Parameters: << parameters.org_name >>/<< parameters.repo_name >>"
+      
+workflows:
+  my_workflow:
+    jobs:
+      - build:
+          org_name: my_organization
+          repo_name: project1
+
+      - build:
+          org_name: my_organization
+          repo_name: project2
