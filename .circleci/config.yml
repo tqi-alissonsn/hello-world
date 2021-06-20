@@ -10,12 +10,12 @@ jobs:
         type: string
         default: my_repo
     docker:
-      - image: circleci/go:1.15.0
+      - image: circleci/alpine
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
-      - run: echo "project directory is go/src/github.com/<< parameters.org_name >>/<< parameters.repo_name >>"
+      - run: echo "/<< parameters.org_name >>/<< parameters.repo_name >>"
 
 workflows:
   my_workflow:
