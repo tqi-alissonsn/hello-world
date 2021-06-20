@@ -1,5 +1,15 @@
 version: 2.1
 jobs:
+  build-alpine:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - run:
+          name: The First Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
+
   build-hello-world:
     docker:
       - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
@@ -37,6 +47,7 @@ jobs:
 workflows:
   my_workflow:
     jobs:
+      - build-alpine
       - build-hello-world
       - build-hello-parameter:
           org_name: my_organization
