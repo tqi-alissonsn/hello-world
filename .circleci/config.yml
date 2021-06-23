@@ -1,63 +1,23 @@
 version: 2.1
-jobs:
-  build-alpine:
-    docker:
-      - image: alpine:3.7
-    steps:
-      - run:
-          name: The First Step
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
-      - run:
-          name: Code Has Arrived
-          command: |
-            ls -al
-            echo '^^^That should look familiar^^^'
-
-  build-hello-world:
-    docker:
-      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout # check out the code in the project directory
-      - run:
-          name: hello world 
-          command: echo "hello world" # run the `echo` command
-
-  build-hello-parameter:
+commands: # a reusable command with parameters
+  greeting:
     parameters:
-      greeting:
+      to:
+        default: "world"
         type: string
-        default: Hello
-      person:
-        type: string
-        default: World
+    steps:
+      - run: echo "Hello <<parameters.to>>"
+jobs:
+  my-job:
     docker:
-      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+      - image: cimg/base:stable
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
-      - checkout # check out the code in the project directory
-      - run:
-          name: hello world 
-          command: echo "hello world" # run the `echo` command
-      - run:
-          name: hello parameters
-          command: echo "Hello parameters  <<parameters.greeting>> / << parameters.person >>"
-      
+      - greeting:
+          to: "My-Name"
 workflows:
-  my_workflow:
+  my-workflow:
     jobs:
-      - build-hello-world
-      - build-alpine:
-          requires:
-            - build-hello-world
-      - build-hello-parameter:
-          greeting: greating
-          person: name
-          requires:
-            - build-alpine
+      - my-job
