@@ -7,6 +7,14 @@ commands: # a reusable command with parameters
         type: string
     steps:
       - run: echo "Hello <<parameters.to>>"
+  copy-markdown:
+    parameters:
+      destination:
+        description: destination directory
+        type: string
+        default: docs
+    steps:
+      - run: cp *.md << parameters.destination >> 
 jobs:
   my-job:
     docker:
@@ -17,6 +25,8 @@ jobs:
     steps:
       - greeting:
           to: "My-Name"
+      - copy-markdown:
+          destination: "md"
 workflows:
   my-workflow:
     jobs:
