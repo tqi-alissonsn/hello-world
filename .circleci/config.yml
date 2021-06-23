@@ -52,8 +52,12 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - build-alpine
       - build-hello-world
+      - build-alpine:
+          requires:
+            - build-hello-world
       - build-hello-parameter:
           greeting: greating
           person: name
+          requires:
+            - build-alpine
