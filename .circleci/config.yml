@@ -29,12 +29,12 @@ jobs:
 
   build-hello-parameter:
     parameters:
-      org_name:
+      greeting:
         type: string
-        default: my_org
-      repo_name:
+        default: Hello
+      person:
         type: string
-        default: my_repo
+        default: World
     docker:
       - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
         auth:
@@ -47,7 +47,7 @@ jobs:
           command: echo "hello world" # run the `echo` command
       - run:
           name: hello parameters
-          command: echo "Hello parameters  <<parameters.org_name>> / << parameters.repo_name >>"
+          command: echo "Hello parameters  <<parameters.greeting>> / << parameters.person >>"
       
 workflows:
   my_workflow:
@@ -55,5 +55,5 @@ workflows:
       - build-alpine
       - build-hello-world
       - build-hello-parameter:
-          org_name: my_organization
-          repo_name: project2
+          greeting: greating
+          person: name
